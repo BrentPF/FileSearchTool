@@ -16,5 +16,17 @@ namespace FileSearchTool
 		{
 			InitializeComponent();
 		}
+
+		private void Button1_Click(object sender, EventArgs e)
+		{
+			if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+			{
+				folderLabel.Text = folderBrowserDialog.SelectedPath;
+			}
+		}
+
+		private void searchFiles(string expression, string path) {
+
+		}
 	}
 }
