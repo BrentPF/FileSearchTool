@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -103,7 +105,33 @@ namespace FileSearchTool
 			}
 			else if (path.Contains(".pdf")) {
 
-			}
+                var streamWriter = new StreamWriter("output.txt", false);
+
+                String outputText = "";
+
+                try
+                {
+                    PdfDocument inputDocument = PdfReader.Open("input.pdf", PdfDocumentOpenMode.ReadOnly);
+
+                    foreach (PdfPage page in inputDocument.Pages)
+                    {
+                        for (int index = 0; index < page.Contents.Elements.Count; index++)
+                        {
+                            PdfDictionary.PdfStream stream = page.Contents.Elements.GetDictionary(index).Stream;
+                            outputText = new pdf
+
+                            streamWriter.WriteLine(outputText);
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+
+                }
+                streamWriter.Close();
+
+            }
 
 			return true;
 		}
@@ -140,9 +168,11 @@ namespace FileSearchTool
 				this.searchProgressBar.Maximum = filePaths.Count;
 				// Set the Step property to a value of 1 to represent each file being copied.
 				this.searchProgressBar.Step = 1;
-				//Document parse and add to list
+                //Document parse and add to list
+                int processCount = 0;
 				foreach (string docPath in filePaths) {
-					this.searchProgressLabel.Text = "Processing: " + docPath;
+                    processCount++;
+					this.searchProgressLabel.Text = "Processing ("+ processCount +" of "+ filePaths.Count +"): " + docPath;
 					if (parseFiles(exp, docPath)) {
 						this.pathList.Items.Add(docPath);
 					}

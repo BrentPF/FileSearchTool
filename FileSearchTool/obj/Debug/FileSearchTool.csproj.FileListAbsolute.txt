@@ -8,3 +8,13 @@ C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearch
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csproj.CoreCompileInputs.cache
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.exe
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.pdb
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\bin\Debug\FileSearchTool.exe.config
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\bin\Debug\FileSearchTool.exe
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\bin\Debug\FileSearchTool.pdb
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csprojAssemblyReference.cache
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.Form1.resources
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.Properties.Resources.resources
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csproj.GenerateResource.cache
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csproj.CoreCompileInputs.cache
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.exe
+C:\Users\Brent\Documents\GitHub\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.pdb
