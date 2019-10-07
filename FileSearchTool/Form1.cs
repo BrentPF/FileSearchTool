@@ -1,6 +1,4 @@
-﻿using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -32,108 +31,112 @@ namespace FileSearchTool
 		}
 
 		private bool parseFiles(string expression, string path) {
-
-			if (path.Contains(".xlsx"))
+			if (path.Contains(expression))
+			{
+				return true;
+			}
+			else if (path.Contains(".xlsx") || path.Contains(".xlsx"))
 			{
 				Excel.Application xlApp = new Excel.Application();
+				Excel.Workbooks xlWorkbooks = xlApp.Workbooks;
 				Excel.Workbook xlWorkbook = null;
 				try
 				{
-					xlWorkbook = xlApp.Workbooks.Open(path);
+					xlWorkbook = xlWorkbooks.Open(path);
 				}
 				catch
 				{
 					GC.Collect();
 					GC.WaitForPendingFinalizers();
-					xlWorkbook.Close(SaveChanges: false);
-					Marshal.ReleaseComObject(xlWorkbook);
+					xlWorkbooks.Close();
 					xlApp.Quit();
-					Marshal.ReleaseComObject(xlApp);
 					return false;
 				}
-				Excel.Worksheet xlWorksheet = xlWorkbook.Worksheets[1];
 
-				var iTotalColumns = xlWorksheet.UsedRange.Columns.Count;
-				var iTotalRows = xlWorksheet.UsedRange.Rows.Count;
+				foreach (Excel.Worksheet xlWorksheet in xlWorkbook.Worksheets) {
+					var xlUsedRange = xlWorksheet.UsedRange;
+					var iTotalColumns = xlUsedRange.Columns.Count;
+					var iTotalRows = xlUsedRange.Rows.Count;
 
-				//These two lines do the magic.
-				xlWorksheet.Columns.ClearFormats();
-				xlWorksheet.Rows.ClearFormats();
+					//These two lines do the magic.
+					xlWorksheet.Columns.ClearFormats();
+					xlWorksheet.Rows.ClearFormats();
 
-				iTotalColumns = xlWorksheet.UsedRange.Columns.Count;
-				iTotalRows = xlWorksheet.UsedRange.Rows.Count;
-				Excel.Range cellRange = xlWorksheet.Range[xlWorksheet.Cells[1, 1], xlWorksheet.Cells[iTotalRows, iTotalColumns]];
+					xlUsedRange = xlWorksheet.UsedRange;
+					iTotalColumns = xlUsedRange.Columns.Count;
+					iTotalRows = xlUsedRange.Rows.Count;
+					var cellRange = xlWorksheet.Range[xlWorksheet.Cells[1, 1], xlWorksheet.Cells[iTotalRows, iTotalColumns]];
 
-				var cellValue = cellRange.Find(
-					What: expression,
+					var cellValue = cellRange.Find(
+						What: expression,
 
-					LookIn: Excel.XlFindLookIn.xlValues,
+						LookIn: Excel.XlFindLookIn.xlValues,
 
-					LookAt: Excel.XlLookAt.xlPart
+						LookAt: Excel.XlLookAt.xlPart
 
-					);
+						);
 
+					if (cellValue != null)
+					{
+						GC.Collect();
+						GC.WaitForPendingFinalizers();
+						xlWorkbook.Close(SaveChanges: false);
+						xlWorkbooks.Close();
+						xlApp.Quit();
+						return true;
+					}
+				}
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				Marshal.ReleaseComObject(cellRange);
-				Marshal.ReleaseComObject(xlWorksheet);
 				xlWorkbook.Close(SaveChanges: false);
-				Marshal.ReleaseComObject(xlWorkbook);
+				xlWorkbooks.Close();
 				xlApp.Quit();
-				Marshal.ReleaseComObject(xlApp);
-
-				if (cellValue == null)
-				{
-					return false;
-				}
+				return false;
 			}
-			else if (path.Contains(".docx"))
+			else if (path.Contains(".docx") || path.Contains(".doc"))
 			{
 				var wdApp = new Word.Application();
-				var wdDoc = wdApp.Documents.Open(path);
-				string body = wdDoc.Content.Text;
+				var wdDocs = wdApp.Documents;
+				var wdDoc = wdDocs.Open(path);
+				var wdRange = wdDoc.Content;
+				string body = wdRange.Text;
 				if (body.Contains(expression))
 				{
 					wdDoc.Close(SaveChanges: false);
 					wdApp.Quit();
 					return true;
-				}
+				} 
 				
 				wdDoc.Close(SaveChanges: false);
 				wdApp.Quit();
 				return false;
 			}
-			else if (path.Contains(".pdf")) {
 
-                var streamWriter = new StreamWriter("output.txt", false);
+			return false;
+		}
 
-                String outputText = "";
-
-                try
-                {
-                    PdfDocument inputDocument = PdfReader.Open("input.pdf", PdfDocumentOpenMode.ReadOnly);
-
-                    foreach (PdfPage page in inputDocument.Pages)
-                    {
-                        for (int index = 0; index < page.Contents.Elements.Count; index++)
-                        {
-                            PdfDictionary.PdfStream stream = page.Contents.Elements.GetDictionary(index).Stream;
-                            outputText = new pdf
-
-                            streamWriter.WriteLine(outputText);
-                        }
-                    }
-
-                }
-                catch (Exception e)
-                {
-
-                }
-                streamWriter.Close();
-
-            }
-
-			return true;
+		private void SearchAllFiles(string folder, List<string> paths, string[] extensions)
+		{
+			foreach (string file in Directory.GetFiles(folder))
+			{
+				foreach (string ext in extensions) {
+					var extRegex = new Regex(ext);
+					if (extRegex.IsMatch(file)) {
+						paths.Add(file);
+					}
+				}
+			}
+			foreach (string subDir in Directory.GetDirectories(folder))
+			{
+				try
+				{
+					SearchAllFiles(subDir, paths, extensions);
+				}
+				catch
+				{
+					// swallow, log, whatever
+				}
+			}
 		}
 
 		private void SearchButton_Click(object sender, EventArgs e)
@@ -148,11 +151,12 @@ namespace FileSearchTool
 				this.folderLabel.Enabled = false;
 
 				//Allowed extensions
-				string[] extensions = { "*.docx", "*.pdf", "*.xlsx" };
+				string[] extensions = { ".*\\.docx?$", ".*\\.xlsx?$", ".*\\.pdf$" };
 				string exp = this.searchText.Text;
 				List<string> filePaths = new List<string>();
 
 				//Filepath search
+				/*
 				foreach (string ext in extensions) {
 					try
 					{
@@ -160,8 +164,14 @@ namespace FileSearchTool
 					}
 					catch (Exception err){
 						this.pathList.Items.Add(err.Message);
+						this.pathList.Items.Add("Search completed.");
+						this.searchButton.Enabled = true;
+						this.folderBrowserDialogButton.Enabled = true;
+						this.searchText.Enabled = true;
+						this.folderLabel.Enabled = true;
 					}
-				}
+				}*/
+				SearchAllFiles(this.folderLabel.Text, filePaths, extensions);
 				// Set Minimum to 1 to represent the first file being copied.
 				this.searchProgressBar.Minimum = 0;
 				// Set Maximum to the total number of files to copy.
@@ -169,16 +179,68 @@ namespace FileSearchTool
 				// Set the Step property to a value of 1 to represent each file being copied.
 				this.searchProgressBar.Step = 1;
                 //Document parse and add to list
-                int processCount = 0;
-				foreach (string docPath in filePaths) {
-                    processCount++;
-					this.searchProgressLabel.Text = "Processing ("+ processCount +" of "+ filePaths.Count +"): " + docPath;
-					if (parseFiles(exp, docPath)) {
-						this.pathList.Items.Add(docPath);
-					}
-					this.searchProgressBar.PerformStep();
-				}
+				this.searchProgressLabel.Text = "Processing "+ filePaths.Count +" files...";
+				List<object> arguments = new List<object>();
+				arguments.Add(exp);
+				arguments.Add(filePaths);
+				backgroundWorker1.RunWorkerAsync(argument: arguments);
+				
+			}
+		}
 
+		private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine("Worker called");
+			List<object> argList = e.Argument as List<object>;
+			string exp = argList[0].ToString();
+			List<string> filePaths = argList[1] as List<string>;
+			foreach (string docPath in filePaths)
+			{
+				System.Diagnostics.Debug.WriteLine("Now servicing: " + docPath);
+				try {
+					if (parseFiles(exp, docPath))
+					{
+						string[] res = { docPath, docPath };
+						backgroundWorker1.ReportProgress(1, res);
+					}
+					else
+					{
+						string[] res = { null, docPath };
+						backgroundWorker1.ReportProgress(1, res);
+					}
+				} catch {
+					backgroundWorker1.ReportProgress(1, null);
+				} 
+				System.Diagnostics.Debug.WriteLine("File serviced: " + docPath);
+			}
+
+		}
+
+		// This event handler updates the progress bar.
+		private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			if (e.UserState != null)
+			{
+				string[] res = e.UserState as string[];
+				this.searchProgressBar.PerformStep();
+				this.searchProgressLabel.Text = "Processed (" + (searchProgressBar.Value) + " of " + searchProgressBar.Maximum + ") - " + res[1];
+				System.Diagnostics.Debug.WriteLine("Progress reported: " + this.searchProgressBar.Value);
+				if (res[0] != null)
+				{
+					this.pathList.Items.Add(res[1]);
+				}
+				else {
+					System.Diagnostics.Debug.WriteLine("FAILURE CAUGHT!!!!!!!!!!!!! " + res[1]);
+				}
+			}
+			else {
+				System.Diagnostics.Debug.WriteLine("EXCEPTION CAUGHT!!!");
+				this.searchProgressBar.PerformStep();
+				this.pathList.Items.Add("An unknown error occured while parsing.");
+			}
+
+			if (this.searchProgressBar.Maximum == this.searchProgressBar.Value)
+			{
 				this.pathList.Items.Add("Search completed.");
 				this.searchProgressLabel.Text = "Document search complete.";
 				this.searchButton.Enabled = true;
@@ -186,6 +248,7 @@ namespace FileSearchTool
 				this.searchText.Enabled = true;
 				this.folderLabel.Enabled = true;
 			}
+
 		}
 	}
 }
