@@ -1,0 +1,15 @@
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\FileSearchTool.exe.config
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\FileSearchTool.exe
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\FileSearchTool.pdb
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\BouncyCastle.Crypto.xml
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\Common.Logging.xml
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\bin\Release\Common.Logging.Core.xml
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.csprojAssemblyReference.cache
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.Form1.resources
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.Properties.Resources.resources
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.csproj.GenerateResource.cache
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.csproj.CoreCompileInputs.cache
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.csproj.Fody.CopyLocal.cache
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.csproj.CopyComplete
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.exe
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Release\FileSearchTool.pdb

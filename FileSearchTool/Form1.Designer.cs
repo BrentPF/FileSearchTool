@@ -37,6 +37,7 @@
 			this.searchProgressBar = new System.Windows.Forms.ProgressBar();
 			this.searchProgressLabel = new System.Windows.Forms.Label();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
 			this.SuspendLayout();
 			// 
 			// folderBrowserDialogButton
@@ -57,7 +58,7 @@
 			this.searchText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.searchText.Location = new System.Drawing.Point(113, 12);
 			this.searchText.Name = "searchText";
-			this.searchText.Size = new System.Drawing.Size(532, 26);
+			this.searchText.Size = new System.Drawing.Size(804, 26);
 			this.searchText.TabIndex = 1;
 			// 
 			// pathList
@@ -71,8 +72,9 @@
 			this.pathList.ItemHeight = 20;
 			this.pathList.Location = new System.Drawing.Point(12, 96);
 			this.pathList.Name = "pathList";
-			this.pathList.Size = new System.Drawing.Size(633, 224);
+			this.pathList.Size = new System.Drawing.Size(905, 224);
 			this.pathList.TabIndex = 2;
+			this.pathList.Click += new System.EventHandler(this.PathList_Click);
 			// 
 			// folderLabel
 			// 
@@ -84,7 +86,7 @@
 			this.folderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.folderLabel.Location = new System.Drawing.Point(113, 41);
 			this.folderLabel.Name = "folderLabel";
-			this.folderLabel.Size = new System.Drawing.Size(532, 22);
+			this.folderLabel.Size = new System.Drawing.Size(804, 22);
 			this.folderLabel.TabIndex = 3;
 			// 
 			// searchButton
@@ -104,7 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.searchProgressBar.Location = new System.Drawing.Point(12, 326);
 			this.searchProgressBar.Name = "searchProgressBar";
-			this.searchProgressBar.Size = new System.Drawing.Size(633, 28);
+			this.searchProgressBar.Size = new System.Drawing.Size(905, 28);
 			this.searchProgressBar.TabIndex = 5;
 			// 
 			// searchProgressLabel
@@ -123,11 +125,16 @@
 			this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
 			this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker1_ProgressChanged);
 			// 
+			// backgroundWorker2
+			// 
+			this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker2_DoWork);
+			this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker2_RunWorkerCompleted);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(657, 365);
+			this.ClientSize = new System.Drawing.Size(929, 365);
 			this.Controls.Add(this.searchProgressLabel);
 			this.Controls.Add(this.searchProgressBar);
 			this.Controls.Add(this.searchButton);
@@ -136,7 +143,7 @@
 			this.Controls.Add(this.searchText);
 			this.Controls.Add(this.folderBrowserDialogButton);
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "Brent\'s Extraordinary Document Search Tool";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -153,6 +160,7 @@
 		private System.Windows.Forms.ProgressBar searchProgressBar;
 		private System.Windows.Forms.Label searchProgressLabel;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
+		private System.ComponentModel.BackgroundWorker backgroundWorker2;
 	}
 }
 

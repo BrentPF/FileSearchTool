@@ -17,6 +17,9 @@ namespace FileSearchTool
 {
 	public partial class Form1 : Form
 	{
+
+		private List<string> filePaths = new List<string>();
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -144,46 +147,29 @@ namespace FileSearchTool
 			if (!String.IsNullOrEmpty(this.searchText.Text) && !String.IsNullOrEmpty(this.folderLabel.Text)) {
 				this.pathList.Items.Clear();
 				this.searchProgressBar.Value = 0;
-				this.pathList.Items.Add("Initiating search...");
+				this.searchProgressLabel.Text = "Gathering files from selected folder.";
+				this.pathList.Items.Add("Gathering files...");
 				this.searchButton.Enabled = false;
 				this.folderBrowserDialogButton.Enabled = false;
 				this.searchText.Enabled = false;
 				this.folderLabel.Enabled = false;
 
-				//Allowed extensions
-				string[] extensions = { ".*\\.docx?$", ".*\\.xlsx?$", ".*\\.pdf$" };
-				string exp = this.searchText.Text;
-				List<string> filePaths = new List<string>();
+				filePaths.Clear();
 
-				//Filepath search
-				/*
-				foreach (string ext in extensions) {
-					try
-					{
-						filePaths.AddRange(Directory.GetFiles(this.folderLabel.Text, ext, SearchOption.AllDirectories).ToList());
-					}
-					catch (Exception err){
-						this.pathList.Items.Add(err.Message);
-						this.pathList.Items.Add("Search completed.");
-						this.searchButton.Enabled = true;
-						this.folderBrowserDialogButton.Enabled = true;
-						this.searchText.Enabled = true;
-						this.folderLabel.Enabled = true;
-					}
-				}*/
-				SearchAllFiles(this.folderLabel.Text, filePaths, extensions);
-				// Set Minimum to 1 to represent the first file being copied.
-				this.searchProgressBar.Minimum = 0;
-				// Set Maximum to the total number of files to copy.
-				this.searchProgressBar.Maximum = filePaths.Count;
-				// Set the Step property to a value of 1 to represent each file being copied.
-				this.searchProgressBar.Step = 1;
-                //Document parse and add to list
-				this.searchProgressLabel.Text = "Processing "+ filePaths.Count +" files...";
-				List<object> arguments = new List<object>();
-				arguments.Add(exp);
-				arguments.Add(filePaths);
-				backgroundWorker1.RunWorkerAsync(argument: arguments);
+				try {
+					backgroundWorker2.RunWorkerAsync(argument: this.folderLabel.Text);
+				}
+				catch (Exception err) {
+					this.pathList.Items.Clear();
+					this.searchProgressBar.Value = 0;
+					this.searchProgressLabel.Text = "An error has occured.";
+					this.pathList.Items.Add("An error during execution: " + err.Message);
+					this.searchButton.Enabled = true;
+					this.folderBrowserDialogButton.Enabled = true;
+					this.searchText.Enabled = true;
+					this.folderLabel.Enabled = true;
+				}
+				
 				
 			}
 		}
@@ -249,6 +235,43 @@ namespace FileSearchTool
 				this.folderLabel.Enabled = true;
 			}
 
+		}
+
+		private void BackgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			string exp = this.searchText.Text;
+			this.pathList.Items.Add("Parsing files: matches and errors messages will be listed below (click to copy to clipboard)...");
+			// Set Minimum to 1 to represent the first file being copied.
+			this.searchProgressBar.Minimum = 0;
+			// Set Maximum to the total number of files to copy.
+			this.searchProgressBar.Maximum = filePaths.Count;
+			// Set the Step property to a value of 1 to represent each file being copied.
+			this.searchProgressBar.Step = 1;
+			//Document parse and add to list
+			this.searchProgressLabel.Text = "Processing " + filePaths.Count + " files...";
+			List<object> arguments = new List<object>();
+			arguments.Add(exp);
+			arguments.Add(filePaths);
+			backgroundWorker1.RunWorkerAsync(argument: arguments);
+		}
+
+		private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+		{
+			//Allowed extensions
+			string[] extensions = { ".*\\.docx?$", ".*\\.xlsx?$", ".*\\.pdf$" };
+
+			SearchAllFiles(e.Argument.ToString(), filePaths, extensions);
+			// Set Minimum to 1 to represent the first file being copied.
+		}
+
+		private void PathList_Click(object sender, EventArgs e)
+		{
+			if (this.pathList.SelectedItems.Count == 1)
+			{
+				string path = this.pathList.SelectedItem.ToString();
+				Clipboard.SetData(DataFormats.StringFormat, path);
+				this.searchProgressLabel.Text = "Copied to clipboard: " + path;
+			}
 		}
 	}
 }
