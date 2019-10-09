@@ -22,3 +22,4 @@ C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearch
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csproj.CopyComplete
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.exe
 C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.pdb
+C:\Users\Brent\Documents\WORK\FileSearchTool\FileSearchTool\obj\Debug\FileSearchTool.csprojAssemblyReference.cache

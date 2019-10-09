@@ -199,7 +199,9 @@ namespace FileSearchTool
 				} 
 				System.Diagnostics.Debug.WriteLine("File serviced: " + docPath);
 			}
-
+			if (filePaths.Count < 1) {
+				backgroundWorker1.ReportProgress(1, null);
+			}
 		}
 
 		// This event handler updates the progress bar.
@@ -219,13 +221,13 @@ namespace FileSearchTool
 					System.Diagnostics.Debug.WriteLine("FAILURE CAUGHT!!!!!!!!!!!!! " + res[1]);
 				}
 			}
-			else {
+			else if (filePaths.Count > 0) {
 				System.Diagnostics.Debug.WriteLine("EXCEPTION CAUGHT!!!");
 				this.searchProgressBar.PerformStep();
 				this.pathList.Items.Add("An unknown error occured while parsing.");
 			}
 
-			if (this.searchProgressBar.Maximum == this.searchProgressBar.Value)
+			if (this.searchProgressBar.Maximum == this.searchProgressBar.Value || filePaths.Count < 1)
 			{
 				this.pathList.Items.Add("Search completed.");
 				this.searchProgressLabel.Text = "Document search complete.";
